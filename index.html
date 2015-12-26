@@ -58,8 +58,8 @@ require([], function(){
 		"m": 66
 	};
 	var typeMaterial = new THREE.MeshPhongMaterial({
-        color: 0xdddddd
-    });
+      color: 0xdddddd
+  });
 
 	var screenWidth = window.innerWidth;
 	var keyWidth = 10;
@@ -69,7 +69,7 @@ require([], function(){
 	var onRenderFcts = [];
 
 	var scene	= new Physijs.Scene({reportsize: 50, fixedTimeStep: 1 / 60});
-	scene.setGravity(new THREE.Vector3( 0, -50, 0 )); // set gravity
+	//scene.setGravity(new THREE.Vector3( 0, -9.8, 0 )); // set gravity
 	var camera	= new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 1000);
 	camera.position.z = 2;
 	var controls	= new THREE.OrbitControls(camera);
@@ -79,12 +79,14 @@ require([], function(){
 	    var charCode = (typeof e.which == "number") ? e.which : e.keyCode;
 	    if (charCode) {
 	    	var charString = String.fromCharCode(charCode);
-	        var letterObject = createLetter(charString);
-	        letterObject.position.x = (letterPosition[charString] + (keyWidth/2)) / 100 - pageWidth - (letterObject.textWidth/2);
-	        	console.log(letterObject);
-	        letterObject.position.y = 0;
+        var letterObject = createLetter(charString);
+        letterObject.position.x = (letterPosition[charString] + (keyWidth/2)) / 100 - pageWidth - (letterObject.textWidth/2);
+        letterObject.position.y = 0;
 
-	        scene.add(letterObject);
+        
+        console.log(letterObject);
+        
+        //letterObject.applyCentralImpulse(new THREE.Vector3( 0, -200, 0 ));
 	    }
 	};
 
@@ -96,11 +98,10 @@ require([], function(){
 	renderer.setSize(window.innerWidth, window.innerHeight);
 	document.body.appendChild(renderer.domElement);
 
-	var box = new Physijs.BoxMesh(
-            new THREE.CubeGeometry( 5, 5, 5 ),
-            new THREE.MeshBasicMaterial({ color: 0x888888 })
-        );
-        scene.add( box );
+	var floor = new Physijs.BoxMesh( new THREE.BoxGeometry( 5, 0.5, 5 ), new THREE.MeshBasicMaterial({ color: 0x888888 }), 0);
+	floor.position.y = -1;
+	scene.add(floor);
+	
 
 	//////////////////////////////////////////////////////////////////////////////////
 	//		render 
@@ -137,16 +138,25 @@ require([], function(){
 
 	function createLetter(letter) {
 		var textGeom = new THREE.TextGeometry( letter, {
-	        font:    "helvetiker",
-		    height: 0.01,
-		    size:    0.05,
-		    style:   "normal",
-		    weight: "normal"
-	    });
-	    var textMesh = new Physijs.Mesh( textGeom, typeMaterial );
-	    textGeom.computeBoundingBox();
-	    textMesh.textWidth = textGeom.boundingBox.max.x - textGeom.boundingBox.min.x;
+      font:   	"helvetiker",
+	    height: 	0.03,
+	    size:    	randomNumberBetween(0.01, 0.05),
+	    style:   	"normal",
+	    weight: 	"normal"
+    }, 1);
+    textGeom.computeBoundingBox();
+    var textMesh = new Physijs.BoxMesh(textGeom, typeMaterial);
+    textMesh.textWidth = textGeom.boundingBox.max.x - textGeom.boundingBox.min.x;
+    
+    scene.add(textMesh);
+
+    textMesh.applyCentralImpulse(new THREE.Vector3(0,0,-1));
+
 		return  textMesh;
+	}
+
+	function randomNumberBetween(min,max) {
+	    return Math.random()*(max-min)+min;
 	}
 
 	// (function addUtilMarkers () {
