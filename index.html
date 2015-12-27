@@ -79,19 +79,17 @@ require([], function(){
 	    var charCode = (typeof e.which == "number") ? e.which : e.keyCode;
 	    if (charCode) {
 	    	var charString = String.fromCharCode(charCode);
-        var letterObject = createLetter(charString);
-        letterObject.position.x = (letterPosition[charString] + (keyWidth/2)) / 100 - pageWidth - (letterObject.textWidth/2);
-        letterObject.position.y = 0;
+	        var letterObject = createLetter(charString);
 
-        
-        console.log(letterObject);
-        
+
+	        console.log(letterObject);
+	        //textMesh.applyCentralImpulse(new THREE.Vector3(10000,1000,100));
         //letterObject.applyCentralImpulse(new THREE.Vector3( 0, -200, 0 ));
 	    }
 	};
 
 	// init renderer
-	var renderer	= new THREE.WebGLRenderer({
+	var renderer = new THREE.WebGLRenderer({
 		antialias	: true,
 	});
 	renderer.setClearColor(new THREE.Color('lightgrey'), 1)
@@ -102,7 +100,6 @@ require([], function(){
 	floor.position.y = -1;
 	scene.add(floor);
 	
-
 	//////////////////////////////////////////////////////////////////////////////////
 	//		render 
 	//////////////////////////////////////////////////////////////////////////////////
@@ -138,20 +135,22 @@ require([], function(){
 
 	function createLetter(letter) {
 		var textGeom = new THREE.TextGeometry( letter, {
-      font:   	"helvetiker",
-	    height: 	0.03,
-	    size:    	randomNumberBetween(0.01, 0.05),
-	    style:   	"normal",
-	    weight: 	"normal"
-    }, 1);
-    textGeom.computeBoundingBox();
-    var textMesh = new Physijs.BoxMesh(textGeom, typeMaterial);
-    textMesh.textWidth = textGeom.boundingBox.max.x - textGeom.boundingBox.min.x;
-    
-    scene.add(textMesh);
+	      	font:   	"helvetiker",
+		    height: 	0.03,
+		    size:    	randomNumberBetween(0.01, 0.05),
+		    style:   	"normal",
+		    weight: 	"normal"
+	    });
+	    textGeom.computeBoundingBox();
+	    var textMesh = new Physijs.BoxMesh(textGeom, typeMaterial, 1);
+	    textMesh.textWidth = textGeom.boundingBox.max.x - textGeom.boundingBox.min.x;
+    	textMesh.position.x = (letterPosition[letter] + (keyWidth/2)) / 100 - pageWidth - (textMesh.textWidth/2);
+        textMesh.position.y = -1;
+	    scene.add(textMesh);
+	    console.log(">");
+	    console.log(textMesh);
 
-    textMesh.applyCentralImpulse(new THREE.Vector3(0,0,-1));
-
+	    textMesh.applyImpulse(new THREE.Vector3(0,5,0), new THREE.Vector3(0, 0, 0));
 		return  textMesh;
 	}
 
