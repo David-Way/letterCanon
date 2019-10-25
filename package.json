@@ -1,0 +1,30 @@
+{
+  "name": "lettercanon",
+  "version": "1.0.0",
+  "description": "",
+  "main": "Gulpfile.js",
+  "scripts": {
+    "build": "webpack",
+    "start": "webpack-dev-server",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/David-Way/letterCanon.git"
+  },
+  "author": "david_way@live.ie",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/David-Way/letterCanon/issues"
+  },
+  "homepage": "https://github.com/David-Way/letterCanon#readme",
+  "dependencies": {
+    "ammo.js": "0.0.10",
+    "three": "^0.109.0"
+  },
+  "devDependencies": {
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.9",
+    "webpack-dev-server": "^3.9.0"
+  }
+}
